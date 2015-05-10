@@ -17,6 +17,7 @@ end
 def match(x)
     $look == x or expected("#{x}")
     getChar
+    skipWhite
 end
 
 def isAddOp(c)
@@ -33,23 +34,48 @@ def isDigit(c)
     ('0' .. '9').include?(c)
 end
 
+def isAlNumeric(c)
+    isDigit(c) || isAlpha(c)
+end
+
+def isWhitespace(c)
+    [' ', '\t'].include?(c)
+end
+
+def skipWhite
+    while isWhitespace($look)
+        getChar
+    end
+end
+
 # Get an Identifier 
 def getName
+    token = ""
     isAlpha($look) or expected("Name")
-    upper = uppercase($look)
-    getChar
-    return upper
+    while isAlpha($look)
+        token << $look
+        getChar
+    end
+
+    skipWhite
+    return token
 end
 
 # Get a Number 
 def getNum
+    value = ""
     isDigit($look) or expected("Integer")
-    digit = $look
-    getChar
-    return digit
+    while isDigit($look)
+        value << $look
+        getChar
+    end
+
+    skipWhite
+    return value
 end
 
 # Initialize 
 def init
     getChar
+    skipWhite
 end

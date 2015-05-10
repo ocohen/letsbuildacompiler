@@ -83,7 +83,7 @@ def divide
     match('/')
     factor
     puts("pop eax")
-    puts("cdq")
+    puts("mov edx, 0")
     puts("idiv ecx")
     puts("mov ecx,eax")
 end
