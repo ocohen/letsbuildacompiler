@@ -58,9 +58,10 @@ end
 def divide
     match('/')
     factor
-    puts("pop edx")
-    puts("idiv edx,ecx")
-    puts("mov ecx,edx")
+    puts("pop eax")
+    puts("mov edx, 0")
+    puts("idiv ecx")
+    puts("mov ecx,eax")
 end
 
 def term 
