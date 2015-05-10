@@ -4,27 +4,27 @@ require_relative 'cradle'
 def add
     match('+')
     term
-    puts "popq %rdx"
-    puts "add %rcx,%rdx"
-    puts "pushq %rcx"
+    puts "pop edx"
+    puts "add ecx,edx"
+    puts "push ecx"
 end
 
 def subtract
     match('-')
     term
-    puts "popq %rdx"
-    puts "sub %rdx,%rcx" #this is%rdx =%rdx -%rcx
-    puts "pushq %rdx"
+    puts "pop edx"
+    puts "sub edx,ecx" #this isedx =edx -ecx
+    puts "push edx"
 end
 
 def expression
     if isAddOp($look)
-        puts "movq %rcx, 0"
+        puts "mov ecx, 0"
     else
         term
     end
 
-    puts "pushq %rcx"
+    puts "push ecx"
     while ["+", "-"].include?($look) do
         case $look
         when '+'
@@ -35,7 +35,7 @@ def expression
             expected('AddOp')
         end
     end
-    puts "popq %rcx"
+    puts "pop ecx"
 end
 
 def factor 
@@ -44,29 +44,29 @@ def factor
         expression
         match(')')
     else
-        puts "movq %rcx, #{getNum}"
+        puts "mov ecx, #{getNum}"
     end
 end
 
 def multiply
     match('*')
     factor
-    puts("popq %rdx")
-    puts("imul %rcx,%rdx")
+    puts("pop edx")
+    puts("imul ecx,edx")
 end
 
 def divide
     match('/')
     factor
-    puts("popq %rdx")
-    puts("idivq %rdx,%rcx")
-    puts("movq %rcx,%rdx")
+    puts("pop edx")
+    puts("idiv edx,ecx")
+    puts("mov ecx,edx")
 end
 
 def term 
     factor
     while ["*", "/"].include?($look) do
-        puts "pushq %rcx"
+        puts "push ecx"
         case $look
         when '*'
             multiply
@@ -78,11 +78,10 @@ def term
     end
 end
 
-puts ".text"
-puts ".globl run"
-puts ".align 4,0x90"
+puts "section .text"
+puts "global run"
 puts "run:"
 init
 expression
+puts "mov eax, ecx"
 puts "ret"
-puts ".cfi_endproc"
